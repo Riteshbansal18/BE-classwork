@@ -11,7 +11,6 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Function to read posts from post.json
 const readPosts = () => {
     try {
         const data = fs.readFileSync(postsFilePath, "utf8");
@@ -21,24 +20,18 @@ const readPosts = () => {
         return [];
     }
 };
-
-// Function to write posts to post.json
 const writePosts = (posts) => {
     fs.writeFileSync(postsFilePath, JSON.stringify(posts, null, 2), "utf8");
 };
 
-// Home Route - Display all posts
 app.get("/", (req, res) => {
     const posts = readPosts();
     res.render("home", { posts });
 });
-
-// Render Add Post Page
 app.get("/add", (req, res) => {
     res.render("addpost");
 });
 
-// Add a New Post
 app.post("/add-post", (req, res) => {
     const { title, content } = req.body;
     if (!title || !content) {
@@ -53,7 +46,6 @@ app.post("/add-post", (req, res) => {
     res.redirect("/");
 });
 
-// Render Single Post Page
 app.get("/post", (req, res) => {
     const postId = parseInt(req.query.id);
     const posts = readPosts();
@@ -65,7 +57,6 @@ app.get("/post", (req, res) => {
     res.render("post", { post });
 });
 
-// Delete a Post
 app.delete("/delete-post", (req, res) => {
     const postId = parseInt(req.query.id);
     let posts = readPosts();
@@ -75,7 +66,6 @@ app.delete("/delete-post", (req, res) => {
         return res.status(404).json({ error: "Post not found." });
     }
 
-    // Remove the post from the array
     posts.splice(postIndex, 1);
     writePosts(posts);
 
